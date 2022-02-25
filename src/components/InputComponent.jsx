@@ -53,10 +53,13 @@ const InputComponentPhone = (props) => {
     <React.Fragment>
       <h3>Phone</h3>
       <Input
+        value={props.phone}
+        onChange={props.onChangePhone}
         type="text"
-        name="name"
+        name="phone"
         placeholder="Enter field info"
         autocomplete="off"
+        required
       />
       <ButtonAdd
       props={props}

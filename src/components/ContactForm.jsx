@@ -5,6 +5,13 @@ import { InputComponentExtraPhone } from "../components/ExtraPhone";
 import styled from 'styled-components';
 import { ButtonCancel } from "../components/ButtonCancel";
 
+
+const ContainerButtons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const ButtonSave = styled.button`
 position: absolute;
 height: 40px;
@@ -23,11 +30,11 @@ function ContactForm(props) {
   const {
     modal,
     setModal,
-    contacts,
     setContacts
   } = props;
 
   const [newContactValue, setNewContactValue] = useState('');
+  const [phone, setPhone] = useState('')
   const [extra, setExtra] = useState(false)
 
   const onSubmit = (event) => {
@@ -39,15 +46,25 @@ function ContactForm(props) {
   const onCloseModal = () => {
     setModal(!modal);
   }
-  const addContact = (newContactValue) => {
-    const newContacts = [...contacts];
-    newContacts.push({
-      newContactValue
-    })
+  const addContact = () => {
+    const newContact = {
+      name: newContactValue,
+      phone: phone
+    }
+
+    setContacts(prev => ([
+      ...prev,
+      newContact
+    ]))
   };
 
   const onChange = (event) => {
+    console.log(event.target.value)
     setNewContactValue(event.target.value)
+  }
+  const onChangePhone = (event) => {
+    console.log(event.target.value)
+    setPhone(event.target.value)
   }
 
   return (
@@ -62,21 +79,23 @@ function ContactForm(props) {
           newContactValue={newContactValue}
         />
         <InputComponentPhone
-          extra={extra}
-          setExtra={setExtra}
+          onChangePhone={onChangePhone}
+          phone={phone}
         />
         {extra && (
           <InputComponentExtraPhone
           extra={extra}
           setExtra={setExtra}
           />
-        )}
-      <ButtonSave
-      type='submit'
-      >
-        Save
-      </ButtonSave>
-      <ButtonCancel onClick={onCloseModal} />
+      )}
+      <ContainerButtons>
+        <ButtonSave
+        type='submit'
+        >
+          Save
+        </ButtonSave>
+        <ButtonCancel onClick={onCloseModal} />
+      </ContainerButtons>
     </form>
   );
 }

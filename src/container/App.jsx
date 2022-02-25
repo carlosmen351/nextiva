@@ -14,30 +14,11 @@ const Container = styled.div`
   margin: 2rem auto 0;
 `;
 
-const defaultValues = [
-  {
-    name: 'carlos Meneses',
-    phone: 1234,
-    extraPhone: 123
-  },
-  {
-    name: 'Mateo Meneses',
-    phone: 567,
-    extraPhone: 234
-  },
-  {
-    name: 'Aracely vazquez',
-    phone: 890,
-    extraPhone: 12354
-  },
-]
-
-
 function App() {
 
   const [modal, setModal] = useState(false);
   const [search, setSearch] = useState('');
-  const [contacts, setContacts] = useState(defaultValues);
+  const [contacts, setContacts] = useState([]);
 
   let searchedContacts = [];
 
@@ -46,14 +27,14 @@ function App() {
   } else {
     searchedContacts = contacts.filter(contact => {
       const contactName = contact.name.toLowerCase();
-     /*  const contactPhone = contact.phone.toString();
-      const contactExtraPhone = contact.extraPhone.toString(); */
+      const contactPhone = contact.phone.toString();
+/*       const contactExtraPhone = contact.extraPhone.toString(); */
       const searchText = search.toLowerCase();
       return (
         contactName.includes(searchText)
-       /*  ||
-        contactPhone.includes(searchText)
         ||
+        contactPhone.includes(searchText)
+/*         ||
         contactExtraPhone.includes(searchText) */
       )
     })
@@ -85,13 +66,23 @@ function App() {
           setSearch={setSearch}
         />
         <ContactList>
-          {contacts.map(contact => (
-            <Contact
-              key={contact.name}
-              name={contact.name}
-              onDeleted={() => onDeleted(contact.name)}
-            />
-          ))}
+          {
+            searchedContacts.length ? (
+              <React.Fragment>
+                {searchedContacts.map(contact => (
+                  <Contact
+                    key={contact.name}
+                    name={contact.name}
+                    phone={contact.phone}
+                    onDeleted={() => onDeleted(contact.name)}
+                  />
+                ))}
+              </React.Fragment>
+            ) : (
+              <p>No hay contactos</p>
+            )
+          }
+          {}
           </ContactList>
         <AddContactButton
         modal={modal}
