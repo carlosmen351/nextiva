@@ -22,8 +22,8 @@ Button
 
 Input
 
-## Missing
-
 Add new contacts
+
+## Missing
 
 Edit contacts
