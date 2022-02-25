@@ -1,66 +1,113 @@
 import React from "react";
 import styled from 'styled-components';
-import { InputComponent } from "../components/input";
-import { AddContactButton } from "../components/Button";
+import { ContactSearch } from "../components/ContactSearch";
+import { AddContactButton } from "../components/AddContactButton";
 import { Contact } from "../components/Contact";
 import { useState } from "react";
-import { ButtonAdd } from "../components/ButtonAdd";
-import { SaveButton } from "../components/ButtonSave";
-import { ButtonCancel } from "../components/ButtonCancel";
+import { ContactList } from "../components/ContactList";
+import { ContactForm } from "../components/ContactForm";
+
 
 const Container = styled.div`
-  width: 60%;
+  width: 80%;
   height: 80%;
-  margin: 4rem auto 0;
+  margin: 2rem auto 0;
 `;
-const Label = styled.label`
-  width: 100%;
-  height: 4rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+
+const defaultValues = [
+  {
+    name: 'carlos Meneses',
+    phone: 1234,
+    extraPhone: 123
+  },
+  {
+    name: 'Mateo Meneses',
+    phone: 567,
+    extraPhone: 234
+  },
+  {
+    name: 'Aracely vazquez',
+    phone: 890,
+    extraPhone: 12354
+  },
+]
+
 
 function App() {
-  const [state, setState] = useState({
-    modal: false,
-  });
-  const onOpenModal = () => {
-    setState({
-      ...state,
-      modal: true
-    });
+
+  const [modal, setModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const [contacts, setContacts] = useState(defaultValues);
+
+  let searchedContacts = [];
+
+  if (!search.length > 1) {
+    searchedContacts = contacts;
+  } else {
+    searchedContacts = contacts.filter(contact => {
+      const contactName = contact.name.toLowerCase();
+     /*  const contactPhone = contact.phone.toString();
+      const contactExtraPhone = contact.extraPhone.toString(); */
+      const searchText = search.toLowerCase();
+      return (
+        contactName.includes(searchText)
+       /*  ||
+        contactPhone.includes(searchText)
+        ||
+        contactExtraPhone.includes(searchText) */
+      )
+    })
   }
 
-  if (state.modal === false) {
+  const editContact = (info) => {
+    const contactIndex = contacts.findIndex(contact => contact.name === info || contact.phone === info)
+    const newContacts = [...contacts]
+    newContacts[contactIndex] = {
+      name: contacts[contactIndex].name,
+      phone: contacts[contactIndex].phone,
+      edited: true
+    }
+    setContacts(newContacts);
+  }
+  const onDeleted = (info) => {
+    const todoIndex = contacts.findIndex(contact => contact.name === info || contact.phone === info);
+    const newContacts = [...contacts];
+    newContacts.splice(todoIndex, 1);
+    setContacts(newContacts)
+  };
+
+  if (modal === false) {
     return (
       <Container>
-        <form>
-          Search:
-          <Label>
-            <InputComponent type="text" name="search" placeholder="Enter field name" />
-          </Label>
-          <Contact/>
-        </form>
-        <AddContactButton onClick={onOpenModal}  >Add Contact</AddContactButton>
-
+        <h2>Search</h2>
+        <ContactSearch
+          search={search}
+          setSearch={setSearch}
+        />
+        <ContactList>
+          {contacts.map(contact => (
+            <Contact
+              key={contact.name}
+              name={contact.name}
+              onDeleted={() => onDeleted(contact.name)}
+            />
+          ))}
+          </ContactList>
+        <AddContactButton
+        modal={modal}
+        setModal={setModal}
+        />
       </Container>
     );
-  } else if (state.modal === true) {
+  } else if (modal === true) {
     return (
       <Container>
-        <h1>Add Contact</h1>
-        Name:
-        <Label>
-          <InputComponent type="text" name="name" placeholder="Enter field name" />
-        </Label>
-        Phone:
-        <Label>
-          <InputComponent type="text" name="phone" placeholder="Enter field name" />
-          <ButtonAdd/>
-        </Label>
-        <SaveButton>ADD</SaveButton>
-        <ButtonCancel></ButtonCancel>
+        <ContactForm
+          modal={modal}
+          setModal={setModal}
+          contacts={contacts}
+          setContacts={setContacts}
+        />
       </Container>
     )
   }

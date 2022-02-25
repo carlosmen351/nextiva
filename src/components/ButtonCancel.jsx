@@ -14,9 +14,9 @@ const ButonCancel = styled.button`
   box-shadow: none;
 `;
 
-const ButtonCancel = () => {
+const ButtonCancel = ({onClick}) => {
   return (
-    <ButonCancel>Cancel</ButonCancel>
+    <ButonCancel onClick={onClick}> Cancel</ButonCancel>
   );
 }
 
